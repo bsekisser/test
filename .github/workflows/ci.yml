@@ -22,6 +22,24 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  sources:
+    runs-on: ubuntu-lastest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: 3.12.x
+    - name: apt dependencies
+      run: sudo pip3 install meson ninja
+    - name: fetch dependencies via meson
+    - uses: actions/upload-artifact@v4
+      with:
+        name: test-${{env.version}}-src-with-deps.zip
+        path: |
+          .
+          !.git/
+          !.github/
+          !.ci-scripts/
   linux:
     runs-on: ubuntu-latest
    steps:
@@ -92,22 +110,3 @@ jobs:
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86
         meson --buildtype=release build || exit /b 111
         ninja -C build || exit /b 222
-
-#  sources:
-#    runs-on: ubuntu-lastest
-#    steps:
-#    - uses: actions/checkout@v4
-#    - uses: actions/setup-python@v5
-#      with:
-#        python-version: 3.12.x
-#    - name: apt dependencies
-#      run: sudo pip3 install meson ninja
-#    - name: fetch dependencies via meson
-#    - uses: actions/upload-artifact@v4
-#      with:
-#        name: test-${{env.version}}-src-with-deps.zip
-#        path: |
-#          .
-#          !.git/
-#          !.github/
-#          !.ci-scripts/
