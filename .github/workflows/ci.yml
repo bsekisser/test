@@ -40,7 +40,6 @@ jobs:
 #          !.git/
 #          !.github/
 #          !.ci-scripts/
-
   linux:
     runs-on: ubuntu-latest
    steps:
@@ -54,7 +53,6 @@ jobs:
       run: |
         meson build
         sudo ninja -C build install
-
   linux-arm:
     runs-on: ubuntu-24.04-arm
    steps:
@@ -68,7 +66,6 @@ jobs:
       run: |
         meson build
         sudo ninja -C build install
-
   w64:
     runs-on: windows-latest
     steps:
@@ -91,7 +88,6 @@ jobs:
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
         meson --buildtype=release build || exit /b 111
         ninja -C build || exit /b 222
-
   w32:
     runs-on: windows-latest
     steps:
