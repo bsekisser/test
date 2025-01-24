@@ -1,14 +1,16 @@
+---
 # This is a basic workflow to help you get started with Actions
 
 name: CI
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "master" branch
+  # Triggers the workflow on push or pull request events
+  # but only for the "master" branch
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -21,77 +23,82 @@ concurrency:
 env:
   version: 0.0.1
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# A workflow run is made up of one or more jobs
+# that can run sequentially or in parallel
 jobs:
   sources:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: 3.12.x
-    - name: apt dependencies
-      run: sudo pip3 install meson ninja
-    - name: fetch dependencies via meson
-    - uses: actions/upload-artifact@v4
-      with:
-        name: test-${{env.version}}-src-with-deps.zip
-        path: |
-          .
-          !.git/
-          !.github/
-          !.ci-scripts/
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.12.x
+      - name: apt dependencies
+        run: sudo pip3 install meson ninja
+      - name: fetch dependencies via meson
+      - uses: actions/upload-artifact@v4
+        with:
+          name: test-${{env.version}}-src-with-deps.zip
+          path: |
+            .
+            !.git/
+            !.github/
+            !.ci-scripts/
+
   linux:
     runs-on: ubuntu-latest
-   steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: 3.12.x
-    - name: apt dependencies
-      run: sudo pip3 install meson ninja
-    - name: make build
-      run: |
-        meson build
-        sudo ninja -C build install
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.12.x
+      - name: apt dependencies
+        run: sudo pip3 install meson ninja
+      - name: make build
+        run: |
+          meson build
+          sudo ninja -C build install
+
   linux-arm:
     runs-on: ubuntu-24.04-arm
-   steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: 3.12.x
-    - name: apt dependencies
-      run: sudo pip3 install meson ninja
-    - name: make build
-      run: |
-        meson build
-        sudo ninja -C build install
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.12.x
+      - name: apt dependencies
+        run: sudo pip3 install meson ninja
+      - name: make build
+        run: |
+          meson build
+          sudo ninja -C build install
+
   w64:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: 3.12.x
-    - name: preparing msvc toolchain
-      uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: x64
-    - name: dependencies
-      shell: bash
-      run: |
-        pip install ninja meson
-    - name: meson
-      shell: cmd
-      run: |
-        set ARCH=x64
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
-        meson --buildtype=release build || exit /b 111
-        ninja -C build || exit /b 222
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.12.x
+      - name: preparing msvc toolchain
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+      - name: dependencies
+        shell: bash
+        run: |
+          pip install ninja meson
+      - name: meson
+        shell: cmd
+        run: |
+          set ARCH=x64
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
+          meson --buildtype=release build || exit /b 111
+          ninja -C build || exit /b 222
+
   w32:
-    runs-on: windows-latest
-    steps:
+  runs-on: windows-latest
+  steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
