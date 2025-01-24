@@ -97,24 +97,24 @@ jobs:
           ninja -C build || exit /b 222
 
   w32:
-  runs-on: windows-latest
-  steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: 3.12.x
-    - name: preparing msvc toolchain
-      uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: x86
-    - name: dependencies
-      shell: bash
-      run: |
-        pip install ninja meson
-    - name: meson
-      shell: cmd
-      run: |
-        set ARCH=x86
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86
-        meson --buildtype=release build || exit /b 111
-        ninja -C build || exit /b 222
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.12.x
+      - name: preparing msvc toolchain
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
+      - name: dependencies
+        shell: bash
+        run: |
+          pip install ninja meson
+      - name: meson
+        shell: cmd
+        run: |
+          set ARCH=x86
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86
+          meson --buildtype=release build || exit /b 111
+          ninja -C build || exit /b 222
